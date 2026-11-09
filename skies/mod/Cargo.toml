@@ -1,0 +1,18 @@
+[package]
+name = "horizon-skies"
+version = "0.3.0"
+edition = "2024"
+description = "Big Skies: regional dynamic weather for Horizon. Storms you can watch from kilometres away, fronts, showers and valley fog, drawn over the distant terrain."
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# The Horizon mod SDK with the input, ui, render and world interfaces (the Stink-O/horizon fork, which Orbital Laser
+# also runs on). .cargo/config.toml points it at a local checkout when there is one.
+horizon-mod-sdk = { git = "https://github.com/Stink-O/horizon", branch = "mod-api-input-ui-render-world" }
+
+[profile.release]
+opt-level = "s"
+lto = true

@@ -1,0 +1,184 @@
+schema = 1
+id = "natural_lighting"
+name = "Natural Lighting"
+version = "1.0.0"
+api = "0.1"
+description = "Soft sun and moon shadows, water with waves, reflections, clear shallows and caustics, sunrays, a soft bloom and a gentle grade. With Big Skies, the clouds dim the sunlight and its shadows."
+authors = ["Dangerousbros"]
+license = "MIT"
+shared = ["common.wgsl"]
+
+[material]
+file = "material.wgsl"
+
+[shadow]
+resolution = 2048
+distance = 160.0
+option = "shadows"
+resolution_option = "shadow_resolution"
+distance_option = "shadow_distance"
+
+[reflection]
+option = "reflections"
+
+[[post]]
+file = "post/rays.wgsl"
+name = "Sunrays"
+
+[[post]]
+file = "post/bright.wgsl"
+name = "Bloom: the bright light"
+output = "bloom_half"
+scale = 0.5
+
+[[post]]
+file = "post/spread.wgsl"
+name = "Bloom: spread"
+output = "bloom_quarter"
+scale = 0.25
+
+[[post]]
+file = "post/grade.wgsl"
+name = "Bloom and grade"
+
+[[pages]]
+id = "main"
+name = "Natural Lighting"
+items = ["page:light", "page:water", "page:picture"]
+
+[[pages]]
+id = "light"
+name = "Light and shadow"
+description = "The sun's and the moon's shadows."
+items = ["shadows", "shadow_quality", "shadow_resolution", "shadow_distance", "shadow_softness", "shade"]
+
+[[pages]]
+id = "water"
+name = "Water"
+description = "Waves, reflections, clear shallows and the light through water."
+items = ["waves", "reflections", "caustics", "water_clarity"]
+
+[[pages]]
+id = "picture"
+name = "Picture"
+description = "Sunrays, bloom and the colour grade."
+items = ["sunrays", "bloom", "saturation", "contrast"]
+
+[[options]]
+id = "shadows"
+name = "Shadows"
+description = "Shadows from the sun by day and the moon by night."
+type = "bool"
+default = true
+
+[[options]]
+id = "shadow_quality"
+name = "Shadow edges"
+description = "Low: a few taps. Medium and High: softer the farther a shadow falls from what casts it."
+type = "choice"
+values = ["low", "medium", "high"]
+default = "medium"
+
+[[options]]
+id = "shadow_resolution"
+name = "Shadow detail"
+description = "The shadow map's side, in texels."
+type = "choice"
+values = ["1024", "2048", "4096"]
+default = "2048"
+
+[[options]]
+id = "shadow_distance"
+name = "Shadow distance"
+description = "How far round you shadows are drawn, in blocks."
+type = "choice"
+values = ["96", "160", "256"]
+default = "160"
+
+[[options]]
+id = "shadow_softness"
+name = "Shadow softness"
+type = "float"
+default = 1.0
+min = 0.25
+max = 2.0
+step = 0.05
+
+[[options]]
+id = "shade"
+name = "Shade"
+description = "How much of the sky's light is left in full shadow."
+type = "float"
+default = 0.55
+min = 0.2
+max = 0.9
+step = 0.05
+
+[[options]]
+id = "waves"
+name = "Waves"
+type = "bool"
+default = true
+
+[[options]]
+id = "reflections"
+name = "Reflections"
+description = "The world mirrored in water."
+type = "bool"
+default = true
+
+[[options]]
+id = "caustics"
+name = "Caustics"
+description = "Bright threads of sunlight on what lies under water."
+type = "bool"
+default = true
+
+[[options]]
+id = "water_clarity"
+name = "Water clarity"
+description = "How deep you see into water, in blocks."
+type = "float"
+default = 12.0
+min = 4.0
+max = 32.0
+step = 1.0
+
+[[options]]
+id = "sunrays"
+name = "Sunrays"
+type = "float"
+default = 0.7
+min = 0.0
+max = 1.5
+step = 0.05
+
+[[options]]
+id = "bloom"
+name = "Bloom"
+type = "float"
+default = 1.0
+min = 0.0
+max = 2.0
+step = 0.05
+
+[[options]]
+id = "saturation"
+name = "Saturation"
+type = "float"
+default = 1.05
+min = 0.5
+max = 1.5
+step = 0.01
+
+[[options]]
+id = "contrast"
+name = "Contrast"
+type = "float"
+default = 0.08
+min = 0.0
+max = 0.4
+step = 0.01
+
+[budget]
+gpu_ms = 3.0

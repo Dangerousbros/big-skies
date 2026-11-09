@@ -1,0 +1,193 @@
+# Big Skies (Horizon Skies) on native Horizon (upstream horizon-rust/horizon): the mod's own code, unchanged, on a native build of
+# the mod SDK, driven through Horizon's native hooks. tools/build_native.py fills in the version and the revisions.
+# The method, and the glue, SDK and post pass it starts from, are Orbital Laser's (github.com/Stink-O/orbital-laser,
+# MIT License, Copyright (c) 2026 Stink-O).
+[mod]
+id = "big_skies"
+version = "@VERSION@"
+priority = 100
+
+[compatibility]
+horizon_revision = "@HORIZON@"
+
+# The mod's code (skies/mod/src and its shader), unchanged, on the native SDK (engine/src/horizon_sdk.rs).
+[[crate]]
+id = "engine"
+path = "engine"
+
+# The fork's mod host (game/mods.rs) driving it through Horizon's hooks and helpers: the client half and the server
+# half (glue.rs).
+[[module]]
+id = "glue"
+file = "crates/horizon-client/src/game.rs"
+name = "skies_glue"
+source = "glue.rs"
+
+# The fork's post pass (gfx/mod_post.rs and its prelude), drawn on the renderer's hook points (post.rs).
+[[module]]
+id = "post"
+file = "crates/horizon-client-render/src/lib.rs"
+name = "skies_post"
+source = "post.rs"
+visibility = "pub"
+
+[[injection]]
+id = "tick"
+hook = "tick"
+hook_version = 1
+kind = "HEAD"
+helper = "tick.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+[[injection]]
+id = "frame"
+hook = "frame"
+hook_version = 1
+kind = "HEAD"
+helper = "frame.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "elapsed", ty = "std::time::Duration", value = "elapsed" },
+]
+
+[[injection]]
+id = "command"
+hook = "command"
+hook_version = 1
+kind = "HEAD"
+helper = "command.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "command", ty = "&str", value = "command" },
+  { name = "ran", ty = "&mut bool", value = "&mut *ran" },
+]
+
+[[injection]]
+id = "mods"
+hook = "mods"
+hook_version = 1
+kind = "HEAD"
+helper = "mods.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "mods", ty = "&mut Vec<crate::game::native_hooks::NativeMod>", value = "&mut *mods" },
+]
+
+[[injection]]
+id = "net_from_client"
+hook = "net_from_client"
+hook_version = 1
+kind = "HEAD"
+helper = "net_from_client.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "player", ty = "u128", value = "player" },
+  { name = "channel", ty = "&str", value = "channel" },
+  { name = "data", ty = "&[u8]", value = "data" },
+]
+
+[[injection]]
+id = "net_from_server"
+hook = "net_from_server"
+hook_version = 1
+kind = "HEAD"
+helper = "net_from_server.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "channel", ty = "&str", value = "channel" },
+  { name = "data", ty = "&[u8]", value = "data" },
+]
+
+[[injection]]
+id = "level_tick_post"
+hook = "level_tick_post"
+hook_version = 1
+kind = "HEAD"
+helper = "level_tick_post.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "dimension", ty = "&str", value = "dimension" },
+]
+
+[[injection]]
+id = "world_drawn"
+hook = "world_drawn"
+hook_version = 1
+kind = "HEAD"
+helper = "world_drawn.rs"
+bindings = [{ name = "world", ty = "&mut crate::gfx::native_render::WorldDrawn<'_>", value = "&mut *world" }]
+
+[[injection]]
+id = "render_needs"
+hook = "render_needs"
+hook_version = 1
+kind = "HEAD"
+helper = "render_needs.rs"
+bindings = [{ name = "needs", ty = "&mut crate::gfx::native_render::RenderNeeds", value = "&mut *needs" }]
+
+# What the pass reads of the frame (the fork took it in draw_frame): a HEAD on the renderer's frame.
+[[injection]]
+id = "render_frame"
+target = "horizon_client_render::gfx::Renderer::render"
+kind = "HEAD"
+helper = "render_frame.rs"
+bindings = [{ name = "frame", ty = "&crate::gfx::Frame<'_>", value = "frame" }]
+
+# `/skies` in the server's command tree, so the chat box colours and completes it (glue.rs `USAGES`).
+[[injection]]
+id = "register_commands"
+hook = "register_commands"
+hook_version = 1
+kind = "HEAD"
+helper = "register_commands.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "commands", ty = "&mut Vec<crate::mod_api::NativeCommand>", value = "&mut *commands" },
+]
+
+[[injection]]
+id = "client_level_load"
+hook = "client_level_load"
+hook_version = 1
+kind = "HEAD"
+helper = "client_level_load.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "dimension", ty = "&str", value = "dimension" },
+]
+
+[[injection]]
+id = "client_level_unload"
+hook = "client_level_unload"
+hook_version = 1
+kind = "HEAD"
+helper = "client_level_unload.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "dimension", ty = "&str", value = "dimension" },
+]
+
+# `/skies` reaching the server through its command tree (`register_commands`): handed to the window.
+[[injection]]
+id = "perform_command"
+hook = "perform_command"
+hook_version = 1
+kind = "HEAD"
+helper = "perform_command.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "command", ty = "&str", value = "command" },
+  { name = "ran", ty = "&mut bool", value = "&mut *ran" },
+]
+
+# What the sky lets through, for a Horizon shader pack (Natural Lighting reads it as frame.mods[0..3]).
+[[injection]]
+id = "shader_params"
+hook = "shader_params"
+hook_version = 1
+kind = "HEAD"
+helper = "shader_params.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "params", ty = "&mut [[f32; 4]; 8]", value = "&mut *params" },
+]

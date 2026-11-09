@@ -1,0 +1,8 @@
+id = "skies"
+name = "Big Skies"
+version = "0.3.0"
+description = "Regional dynamic weather: storms, showers, fronts and valley fog that drift across the world with the wind, so you can watch a thunderstorm on the horizon while the sun shines where you stand. Real-scale volumetric clouds under a physical sky, distant rain shafts, anvils and lightning, thunder that grows from a far rumble to a crack, rainbows after rain, mist and spray rainbows at waterfalls, over Horizon's distant terrain. /skies for the forecast and controls."
+authors = ["James Vickers", "Claude"]
+api = "0.2"
+side = "client"
+capabilities = ["game-read", "chat", "storage", "render", "world"]
