@@ -1,4 +1,12 @@
-# Big Skies
+# Big Skies - Dynamic Weather and Atmospherics
+Big skies is a mod that adds atmospheric dynamic weather based on climate across all biomes. Leveraging rust to allow for optimised shaders Big Skies draws raytraced weather across the world. 
+
+Dynamic Systems
+
+Clouds form based on local weather. River valleys have morning fog, storms form in humid air and last over night. Snow falls on peaks and cold biomes with overcast skies. The aim is to completely revamp the way weather works in minecraft moving away from the global weather to one based on real life climates for an immersive experience.
+
+Compatability
+Big skies runs both as a client side mod for multiplayer and as a configurable one for singleplayer. In singleplayer or hosted servers with the mod running you can control the weather with commands and creative tools allowing for easy timelapses and sandbox experimentation when running in multiplayer it defaults to a client side state replacing existing weather for you only.
 
 Two add-ons for [Horizon](https://github.com/horizon-rust/horizon), made to go together and fine apart:
 
