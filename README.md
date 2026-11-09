@@ -40,6 +40,13 @@ From Horizon's mod browser (launcher > Mods) once they are listed there, or by h
 Big Skies 0.3.0 is built for Horizon Nightly 2026-11-08 (`fdc87ae`); Natural Lighting needs shader API 0.1
 (Nightly 2026-11-08 or later).
 
+Release files are signed with [minisign](https://jedisct1.github.io/minisign/); the public key is in
+[minisign.pub](minisign.pub):
+
+```
+minisign -Vm big_skies.hnmod -p minisign.pub
+```
+
 ## Build
 
 ```
